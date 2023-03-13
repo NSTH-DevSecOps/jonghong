@@ -83,6 +83,22 @@ export default function Root() {
             </p>
           )}
         </nav>
+        <nav>
+          <ul>
+            <li>
+              Room 1
+            </li>
+            <li>
+              Room 1
+            </li>
+            <li>
+              Room 1
+            </li>
+            <li>
+              Room 1
+            </li>
+          </ul>
+        </nav>
       </div>
       <div
         id='detail'

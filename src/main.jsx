@@ -6,6 +6,8 @@ import {
 } from "react-router-dom";
 import "./index.css";
 
+import Room1 from "./routes/room1";
+
 import Root, {
   loader as rootLoader,
   action as rootAction,
@@ -52,6 +54,11 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/test",
+    element: <Room1 />,
+    errorElement: <ErrorPage />,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
