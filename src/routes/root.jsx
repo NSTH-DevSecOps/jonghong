@@ -1,117 +1,71 @@
-import { useEffect } from "react";
-import {
-  Outlet,
-  NavLink,
-  useLoaderData,
-  Form,
-  redirect,
-  useNavigation,
-  useSubmit,
-} from 'react-router-dom';
-import { getContacts, createContact } from '../contacts';
+import { Outlet, NavLink } from 'react-router-dom';
+import { format } from 'date-fns';
+import { th } from 'date-fns/locale';
 
-export async function action() {
-  const contact = await createContact();
-  return redirect(`/contacts/${contact.id}/edit`);
-}
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+
+import Typography from '@mui/material/Typography';
 
 export default function Root() {
-  const { contacts, q } = useLoaderData();
-  const navigation = useNavigation();
-  const submit = useSubmit();
-
-  const searching =
-    navigation.location &&
-    new URLSearchParams(navigation.location.search).has(
-      "q"
-    );
-
-  useEffect(() => {
-    document.getElementById("q").value = q;
-  }, [q]);
-
   return (
     <>
-      <div id='sidebar'>
-        <h1>React Router Contacts</h1>
-        <div>
-          <Form id='search-form' role='search'>
-            <input
-              id='q'
-              className={searching ? "loading" : ""}
-              aria-label='Search contacts'
-              placeholder='Search'
-              type='search'
-              name='q'
-              defaultValue={q}
-              onChange={(event) => {
-                submit(event.currentTarget.form);
-              }}
-            />
-            <div id='search-spinner' aria-hidden hidden={!searching} />
-            <div className='sr-only' aria-live='polite'></div>
-          </Form>
-          <Form method='post'>
-            <button type='submit'>New</button>
-          </Form>
-        </div>
-        <nav>
-          {contacts.length ? (
-            <ul>
-              {contacts.map((contact) => (
-                <li key={contact.id}>
-                  <NavLink
-                    to={`contacts/${contact.id}`}
-                    className={({ isActive, isPending }) =>
-                      isActive ? 'active' : isPending ? 'pending' : ''
-                    }>
-                    {contact.first || contact.last ? (
-                      <>
-                        {contact.first} {contact.last}
-                      </>
-                    ) : (
-                      <i>No Name</i>
-                    )}{' '}
-                    {contact.favorite && <span>★</span>}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>
-              <i>No contacts</i>
-            </p>
-          )}
-        </nav>
-        <nav>
-          <ul>
-            <li>
-              Room 1
-            </li>
-            <li>
-              Room 1
-            </li>
-            <li>
-              Room 1
-            </li>
-            <li>
-              Room 1
-            </li>
-          </ul>
-        </nav>
-      </div>
-      <div
-        id='detail'
-        className={navigation.state === 'loading' ? 'loading' : ''}>
-        <Outlet />
-      </div>
+      <Grid container spacing={2}>
+        <Grid item xs={2}>
+          <Box
+            sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+            <nav aria-label='main mailbox folders'>
+              <List>
+                <ListItem disablePadding>
+                  <ListItemButton component={NavLink} to='sm1'>
+                    <ListItemText primary='Small Meeting 1' />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton component={NavLink} to='sm2'>
+                    <ListItemText primary='Small Meeting 2' />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton component={NavLink} to='bm1'>
+                    <ListItemText primary='Big Meeting 1' />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton component={NavLink} to='bm2'>
+                    <ListItemText primary='Big Meeting 2' />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton component={NavLink} to='tr1'>
+                    <ListItemText primary='Training 1' />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </nav>
+          </Box>
+        </Grid>
+        <Grid item xs={10}>
+          <Box sx={{ width: '80%' }}>
+            <div id='detail'>
+              <Outlet />
+            </div>
+          </Box>
+        </Grid>
+      </Grid>
+      <Grid container justifyContent='center'>
+        <Typography variant='subtitle1' component='div'>
+          Date:{' '}
+          {format(Date.now(), 'PPPP, H:m:s X', {
+            locale: th,
+          })}
+        </Typography>
+      </Grid>
     </>
   );
-}
-
-export async function loader({ request }) {
-  const url = new URL(request.url);
-  const q = url.searchParams.get("q");
-  const contacts = await getContacts(q);
-  return { contacts, q };
 }

@@ -4,24 +4,14 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import "./index.css";
 
-import Room1 from "./routes/room1";
+import SM1 from "./routes/sm1";
+import SM2 from "./routes/sm2";
+import BM1 from "./routes/bm1";
+import BM2 from "./routes/bm2";
+import TR1 from "./routes/tr1";
 
-import Root, {
-  loader as rootLoader,
-  action as rootAction,
-} from "./routes/root";
-
-import Contact, {
-  loader as contactLoader,
-} from "./routes/contact";
-
-import EditContact, {
-  action as editAction,
-} from "./routes/edit";
-
-import { action as destroyAction } from "./routes/destroy";
+import Root from "./routes/root";
 
 import Index from "./routes/index";
 
@@ -32,32 +22,29 @@ const router = createBrowserRouter([
     path: "/",
     element: <Root />,
     errorElement: <ErrorPage />,
-    loader: rootLoader,
-    action: rootAction,
     children: [
       { index: true, element: <Index /> },
       {
-        path: "contacts/:contactId",
-        element: <Contact />,
-        loader: contactLoader,
+        path: "sm1",
+        element: <SM1 />,
       },
       {
-        path: "contacts/:contactId/edit",
-        element: <EditContact />,
-        loader: contactLoader,
-        action: editAction,
+        path: "sm2",
+        element: <SM2 />,
       },
       {
-        path: "contacts/:contactId/destroy",
-        action: destroyAction,
-        errorElement: <div>Oops! There was an error.</div>,
+        path: "bm1",
+        element: <BM1 />,
+      },
+      {
+        path: "bm2",
+        element: <BM2 />,
+      },
+      {
+        path: "tr1",
+        element: <TR1 />,
       },
     ],
-  },
-  {
-    path: "/test",
-    element: <Room1 />,
-    errorElement: <ErrorPage />,
   }
 ]);
 
