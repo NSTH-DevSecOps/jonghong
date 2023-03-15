@@ -7,12 +7,12 @@ trigger:
   - main
 
 stages:
-  - stage: CI
+  - stage: Pre-build
     pool:
       # Use self-hosted agent to run pipeline
       # https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/pool?view=azure-pipelines
       # https://learn.microsoft.com/en-us/training/modules/host-build-agent/2-choose-a-build-agent
-      name: "Azure-DO-Self-Hosted"
+      name: 'Azure-DO-Self-Hosted'
       demands:
         - Agent.Type -equals Linux # equals check for Agent.Type Linux; NOTE - This is user-defined capability
       # vmImage: ubuntu-latest # Name of the VM image you want to use; valid only in the Microsoft-hosted pool.
@@ -20,9 +20,9 @@ stages:
       - job: CPSpectral
         steps:
           - script: curl -L 'https://spectral-us.checkpoint.com/latest/x/sh?dsn=$(SPECTRAL_DSN)' | sh
-            displayName: "Install Spectral"
-          - script: $HOME/.spectral/spectral scan --ok --dsn $(SPECTRAL_DSN)  --include-tags base,audit3,iac
-            displayName: "Spectral Scan"
+            displayName: 'Install Spectral'
+          - script: $HOME/.spectral/spectral scan --ok --dsn $(SPECTRAL_DSN) --include-tags base,audit3,iac
+            displayName: 'Spectral Scan'
       - job: AquaScan
         container:
           image: aquasec/aqua-scanner
@@ -32,24 +32,27 @@ stages:
             TRIVY_RUN_AS_PLUGIN: aqua
         steps:
           - script: |
-              trivy fs --security-checks config,vuln,secret --sast .
+              trivy fs --security-checks config,vuln,secret --sast --package-json .
+            displayName: Aqua Scanner
+  - stage: CI
+    pool:
+      name: 'Azure-DO-Self-Hosted'
+      demands:
+        - Agent.Type -equals Linux
+    jobs:
       - job: BuildAndPush
         steps:
           - task: Docker@2
             inputs:
-              containerRegistry: "nsthdso.azurecr.io"
-              repository: "nsth-room-reservation"
-              command: "buildAndPush"
-              Dockerfile: "**/Dockerfile"
+              containerRegistry: 'nsthdso.azurecr.io'
+              repository: 'nsth-room-reservation'
+              command: 'buildAndPush'
+              Dockerfile: '**/Dockerfile'
   - stage: CD
     pool:
-      # Use self-hosted agent to run pipeline
-      # https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/pool?view=azure-pipelines
-      # https://learn.microsoft.com/en-us/training/modules/host-build-agent/2-choose-a-build-agent
-      name: "Azure-DO-Self-Hosted"
+      name: 'Azure-DO-Self-Hosted'
       demands:
-        - Agent.Type -equals Linux # equals check for Agent.Type Linux; NOTE - This is user-defined capability
-      # vmImage: ubuntu-latest # Name of the VM image you want to use; valid only in the Microsoft-hosted pool.
+        - Agent.Type -equals Linux
     jobs:
       - job: Deploy
         steps:
@@ -57,11 +60,12 @@ stages:
           # Ref: https://learn.microsoft.com/en-us/azure/aks/devops-pipeline?view=azure-devops&pivots=pipelines-yaml
           - task: KubernetesManifest@0
             inputs:
-              action: "deploy"
-              kubernetesServiceConnection: "dev-aks_nsthdso"
-              namespace: "nsthdso"
+              action: 'deploy'
+              kubernetesServiceConnection: 'dev-aks_nsthdso'
+              namespace: 'nsthdso'
               manifests: |
                 deployment/aks/deployment.yml
                 deployment/aks/service.yml
-              containers: "nsthdso.azurecr.io/nsth-room-reservation:$(Build.BuildId)"
-              imagePullSecrets: "nsthdso.azurecr.io"
+                deployment/aks/ingress.yml
+              containers: 'nsthdso.azurecr.io/nsth-room-reservation:$(Build.BuildId)'
+              imagePullSecrets: 'nsthdso.azurecr.io'
