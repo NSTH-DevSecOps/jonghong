@@ -7,7 +7,7 @@ trigger:
   - main
 
 stages:
-  - stage: Pre-build
+  - stage: PreBuild
     pool:
       # Use self-hosted agent to run pipeline
       # https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/pool?view=azure-pipelines
