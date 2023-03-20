@@ -47,7 +47,7 @@ stages:
               containerRegistry: 'nsthdso.azurecr.io'
               repository: 'nsth-room-reservation'
               command: 'buildAndPush'
-              Dockerfile: '**/Dockerfile'
+              Dockerfile: '**/Dockerfile.reactUI'
   - stage: CD
     pool:
       name: 'Azure-DO-Self-Hosted'
