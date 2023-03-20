@@ -1,8 +1,8 @@
 // const compression = require('compression');
 const express = require('express');
 const bodyParser = require('body-parser')
-// const cors = require('cors');
-// const morgan = require('morgan');
+const cors = require('cors');
+const morgan = require('morgan');
 // const helmet = require('helmet');
 
 const dbConnector = require('./db/dbConnector.js');
@@ -13,10 +13,10 @@ async function createServer() {
 
 	// app.use(compression());
 	app.use(bodyParser.json());
-	// app.use(morgan('combined'));
-	// app.use(cors({
-	// 	origin: true
-	// }));
+	app.use(morgan('combined'));
+	app.use(cors({
+		origin: true
+	}));
 	// app.use(helmet());
 	
 
