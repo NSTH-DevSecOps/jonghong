@@ -1,0 +1,42 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "nodejs-express",
+    "description": "NSTH Nodejs Express API Apps",
+    "version": "0.0.2-alpha"
+  },
+  "basePath": "/api/",
+  "produces": ["application/json"],
+  "paths": {
+    "/events": {
+      "get": {
+        "tags": ["Event"],
+        "summary": "",
+        "description": "",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Test",
+            "schema": {}
+          }
+        }
+      },
+      "post": {
+        "tags": ["Event"],
+        "summary": "",
+        "description": "",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Test",
+            "schema": {}
+          }
+        }
+      }
+    }
+  }
+}
