@@ -4,6 +4,7 @@ import { th } from 'date-fns/locale';
 
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -15,6 +16,19 @@ import Typography from '@mui/material/Typography';
 export default function Root() {
   return (
     <>
+      <Grid container justifyContent='space-between'>
+        <Grid item xs={10}>
+          <Typography variant='h5' component='div'>
+            NSTH Room Reservation
+          </Typography>
+        </Grid>
+        <Grid item xs={1}>
+          <Button>Sign-In</Button>
+        </Grid>
+        <Grid item xs={1}>
+          
+        </Grid>
+      </Grid>
       <Grid container spacing={2}>
         <Grid item xs={2}>
           <Box
@@ -53,15 +67,15 @@ export default function Root() {
         <Grid item xs={10}>
           <Box sx={{ width: '80%' }}>
             <div id='detail'>
-              <Outlet />
-            </div>
+                <Outlet />
+              </div>
           </Box>
         </Grid>
       </Grid>
       <Grid container justifyContent='center'>
-        <Typography variant='subtitle1' component='div'>
-          Date:{' '}
-          {format(Date.now(), 'PPPP, H:m:s X', {
+        <Typography variant='subtitle2' component='div'>
+          Last Update:{' '}
+          {format(Date.now(), 'PPPP, H:mm:ss X', {
             locale: th,
           })}
         </Typography>

@@ -51,7 +51,7 @@ export function SM1() {
       />
     </>
   );
-};
+}
 
 export function SM2() {
   return (
@@ -104,7 +104,7 @@ export function SM2() {
       />
     </>
   );
-};
+}
 
 export function BM1() {
   return (
@@ -157,7 +157,7 @@ export function BM1() {
       />
     </>
   );
-};
+}
 
 export function BM2() {
   return (
@@ -210,7 +210,7 @@ export function BM2() {
       />
     </>
   );
-};
+}
 
 export function TR1() {
   return (
