@@ -1,19 +1,20 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nsthdso.com
+  name: room-reservation.dev-aks.nsth.net
   namespace: nsthdso
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     cert-manager.io/cluster-issuer: letsencrypt
+    acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - room-reservation.nsthdso.com
+        - room-reservation.dev-aks.nsth.net
       secretName: tls-secret
   rules:
-    - host: room-reservation.nsthdso.com
+    - host: room-reservation.dev-aks.nsth.net
       http:
         paths:
           - path: /

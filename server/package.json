@@ -1,0 +1,32 @@
+{
+  "name": "room-reservation-api",
+  "author": "Chatchai Wongdetsakul <chatchai.wongdet@gmail.com>",
+  "contributors": [],
+  "bugs": {},
+  "homepage": "",
+  "version": "0.0.1",
+  "licenses": [],
+  "keywords": [],
+  "description": "Just for study",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "main": "server.js",
+  "private": false,
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "helmet": "^5.1.1",
+    "mongoose": "^7.0.2",
+    "morgan": "^1.10.0",
+    "npm": "^9.1.2",
+    "swagger-ui-express": "^4.5.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  }
+}
