@@ -19,7 +19,7 @@ async function createServer() {
 	}));
 	// app.use(helmet());
 	
-    await dbConnector.connect(string(process.env.MONGODB_URI));
+    await dbConnector.connect(String(process.env.MONGODB_URI));
 
 	app.get('/healthz', (req, res) => {
         res.status(200).send('OK');
