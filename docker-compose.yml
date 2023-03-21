@@ -1,0 +1,28 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.reactUI
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.node
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - MONGODB_URI=mongodb://mongodb:27017/room-reservation
+    depends_on:
+      - mongodb
+  mongodb:
+    image: arm64v8/mongo:4.2.24
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=room-reservation
+      - MONGO_INITDB_USERNAME=mongo
+      - MONGO_INITDB_PASSWORD=P@ssw0rd
