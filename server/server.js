@@ -19,8 +19,7 @@ async function createServer() {
 	}));
 	// app.use(helmet());
 	
-
-    await dbConnector.connect(process.env.mongodb_url);
+    await dbConnector.connect(string(process.env.MONGODB_URI));
 
 	app.get('/healthz', (req, res) => {
         res.status(200).send('OK');
@@ -30,7 +29,7 @@ async function createServer() {
 	app.use('/api', api_router);
 
 	// Start Server
-	let server = await app.listen(process.env.port, () => console.log('App listen on port: ' + process.env.port));
+	let server = await app.listen(process.env.PORT, () => console.log('App listen on port: ' + process.env.PORT));
 
 	process.on('SIGINT', () => {
 		console.log('Application Terminated!')
