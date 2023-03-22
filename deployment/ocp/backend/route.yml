@@ -4,13 +4,13 @@ metadata:
   name: jonghong.nsth.net
   namespace: jonghong
 spec:
-  host: jonghong.nsth.net
+  host: api.jonghong.nsth.net
   to:
     kind: Service
-    name: jonghong-app-svc
+    name: jonghong-app-api-svc
   port:
     targetPort: 8080
   tls:
     termination: edge
-    insecureEdgeTerminationPolicy: Allow
+    insecureEdgeTerminationPolicy: Redirect
   wildcardPolicy: None
