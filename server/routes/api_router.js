@@ -54,14 +54,27 @@ async function main() {
       .catch((err) => console.error(err));
   });
 
-  // router.put('/events', async (req, res) => {
-  //   await eventSchema
-  //     .create(req.body)
-  //     .then(() => {
-  //       res.status(200).send('Event updated!');
-  //     })
-  //     .catch((err) => console.error(err));
-  // });
+  router.put('/events', async (req, res) => {
+    await eventSchema
+      .findOneAndUpdate(
+        { event_id: req.body.event_id },
+        {
+          $set: {
+            event_id: req.body.event_id,
+            title: req.body.title,
+            start: req.body.start,
+            end: req.body.end,
+          },
+        },
+        {
+          returnDocument: 'after',
+        }
+      )
+      .then((event) => {
+        res.status(200).json(event);
+      })
+      .catch((err) => console.error(err));
+  });
 
   router.use((req, res) => {
     res.status(404).send('API Not found.');
