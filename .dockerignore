@@ -1,5 +1,10 @@
 .git
 .gitignore
-README.md
+
 node_modules
 server/node_modules
+
+Jenkinsfile
+deployment/aks
+
+README.md
