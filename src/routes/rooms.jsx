@@ -6,18 +6,32 @@ import { Scheduler } from '@aldabil/react-scheduler';
  * @returns event
  */
 function eventReconstruct(event) {
+  // console.log(event)
+  // console.log(event.start)
   event.start = new Date(event.start);
   event.end = new Date(event.end);
   return event;
 }
 
 export function SM1() {
-  const fetchRemote = async (query) => {
+  const fetchRemote = async () => {
     var events = await fetch(
       'http://localhost:8080/api/events'
     ).then((response) => response.json());
     await events.forEach((event) => (event = eventReconstruct(event)));
     return events;
+  };
+
+  const handleConfirm = async (event, action) => {
+    if (action === 'create') {
+      return await fetch('http://localhost:8080/api/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event),
+      }).then(response => response.json()).then(data => eventReconstruct(data));
+    }
   };
 
   return (
@@ -37,6 +51,7 @@ export function SM1() {
         endHour: 18,
       }}
       getRemoteEvents={fetchRemote}
+      onConfirm={handleConfirm}
     />
   );
 }
