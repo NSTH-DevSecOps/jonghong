@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: react-frontend
+  name: node-backend
   namespace: jonghong
 spec:
   selector:
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: jonghong-app
-          image: docker-hosted.nexus.devops.demo/jonghong/rr-fe:230322-2
+          image: docker-dev.nexus.devops.demo/jonghong/backend:tag
           imagePullPolicy: Always
           imagePullSecrets:
             - name: nexus.devops.demo
@@ -30,3 +30,6 @@ spec:
             allowPrivilegeEscalation: false
             seccompProfile:
               type: RuntimeDefault
+          env:
+            - name: MONGODB_URL
+              value: mongodb://172.16.68.212:27017/room-reservation
