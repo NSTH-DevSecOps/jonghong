@@ -13,8 +13,8 @@ async function main() {
   router.use('/', swaggerUi.serve);
   router.get('/', swaggerUi.setup(swaggerDocument));
 
-  router.get('/test/', (req, res) => {
-    res.status(200).send('Test');
+  router.get('/login', (req, res) => {
+    res.status(200).send('200');
   });
 
   router.get('/events', async (req, res) => {
@@ -23,17 +23,45 @@ async function main() {
       .then((events) => {
         res.status(200).json(events);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   });
 
+  var max = 0;
+
+  max = await eventSchema
+    .find({})
+    .sort({ event_id: -1 })
+    .limit(1)
+    .then((data) => {
+      return data[0].event_id;
+    })
+    .catch((err) => {
+      return 0;
+    });
+
+  var counter = max + 1;
+
   router.post('/events', async (req, res) => {
-    await eventSchema
-      .create(req.body)
+    var event = req.body;
+    event.event_id = counter;
+    event = await eventSchema
+      .create(event)
       .then(() => {
-        res.status(200).send('Event created!');
+        console.log(event);
+        counter++;
+        res.status(200).json(event);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   });
+
+  // router.put('/events', async (req, res) => {
+  //   await eventSchema
+  //     .create(req.body)
+  //     .then(() => {
+  //       res.status(200).send('Event updated!');
+  //     })
+  //     .catch((err) => console.error(err));
+  // });
 
   router.use((req, res) => {
     res.status(404).send('API Not found.');
