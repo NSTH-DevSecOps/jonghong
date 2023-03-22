@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-frontend
+  namespace: jonghong
+spec:
+  selector:
+    matchLabels:
+      app: jonghong-app
+  template:
+    metadata:
+      labels:
+        app: jonghong-app
+    spec:
+      containers:
+        - name: jonghong-app
+          image: docker-hosted.nexus.devops.demo/jonghong/rr-fe:230322-2
+          imagePullPolicy: Always
+          imagePullSecrets:
+            - name: nexus.devops.demo
+          resources:
+            limits:
+              memory: "64Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
