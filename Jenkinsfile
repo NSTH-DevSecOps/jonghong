@@ -15,7 +15,7 @@ pipeline {
         DOCKER_PASS = credentials('NEXUS_JENKINS_PASS')
 
         // Environment variables for CD
-        RHOCP_CREDENTIALS = credentials('aqua-demo-sa-token')
+        RHOCP_CREDENTIALS = credentials('jonghong-jenkins-token')
         RHOCP_CLUSTER = credentials('RHOCP_PROD-01_API')
         RHOCP_REGISTRY = credentials('RHOCP_PROD-01_REGISTRY')
         RHOCP_PROJECT = 'jonghong'
@@ -33,6 +33,8 @@ pipeline {
         stage('CI') {
             steps {
                 sh "git clone --branch ${BRANCH_NAME} ${APP_REPOSITORY} ${APP_NAME} && cd ${APP_NAME}"
+                sh "sed -i \"s/http/https/\" src/routes/rooms.jsx" // temporarily replace http to https
+                sh "sed -i \"s/localhost:8080/api.jonghong.nsth.net/\" src/routes/rooms.jsx" // temporarily replace api host from localhost to dev one
                 sh "docker build --no-cache --tag ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/frontend:$BUILD_NUMBER -f Dockerfile.reactUI ."
                 sh "cd server && docker build --no-cache --tag ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/backend:$BUILD_NUMBER -f Dockerfile.node ."
             }
