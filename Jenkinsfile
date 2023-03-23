@@ -57,10 +57,10 @@ pipeline {
                 stage('DEPLOY') {
                     steps {
                         script {
-                            sh "sed -i \"s/:tag/:$BUILD_NUMBER/\" ${BACK_END_DEPLOYMENT_DIR}/01-deployment.yaml"
+                            sh "sed -i \"s/:tag/:$BUILD_NUMBER/\" ${BACK_END_DEPLOYMENT_DIR}/deployment.yaml"
                             sh 'oc apply -f ${BACK_END_DEPLOYMENT_DIR}'
 
-                            sh "sed -i \"s/:tag/:$BUILD_NUMBER/\" ${FRONT_END_DEPLOYMENT_DIR}/01-deployment.yaml"
+                            sh "sed -i \"s/:tag/:$BUILD_NUMBER/\" ${FRONT_END_DEPLOYMENT_DIR}/deployment.yaml"
                             sh 'oc apply -f ${FRONT_END_DEPLOYMENT_DIR}'
                         }
                     }

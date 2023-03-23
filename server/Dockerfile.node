@@ -10,8 +10,12 @@ COPY ./db ./db
 COPY ./routes ./routes
 COPY ./server.js ./server.js
 
+ENV NODE_ENV production
+
 ENV MONGODB_URI mongodb://mongodb:27017/default
 ENV PORT 8080
 EXPOSE ${PORT}
+
+USER node
 
 CMD [ "node", "server.js" ]
