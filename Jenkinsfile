@@ -32,11 +32,11 @@ pipeline {
     stages {
         stage('CI') {
             steps {
-                sh "git clone --branch ${BRANCH_NAME} ${APP_REPOSITORY} ${APP_NAME} && cd ${APP_NAME}"
-                sh "sed -i \"s/http/https/\" src/routes/rooms.jsx" // temporarily replace http to https
-                sh "sed -i \"s/localhost:8080/api.jonghong.nsth.net/\" src/routes/rooms.jsx" // temporarily replace api host from localhost to dev one
-                sh "docker build --no-cache --tag ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/frontend:$BUILD_NUMBER -f Dockerfile.reactUI ."
-                sh "cd server && docker build --no-cache --tag ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/backend:$BUILD_NUMBER -f Dockerfile.node ."
+                sh "git clone --branch ${BRANCH_NAME} ${APP_REPOSITORY} ${APP_NAME}"
+                sh "sed -i \"s/http/https/\" ${APP_NAME}/src/routes/rooms.jsx" // temporarily replace http to https
+                sh "sed -i \"s/localhost:8080/api.jonghong.nsth.net/\" ${APP_NAME}/src/routes/rooms.jsx" // temporarily replace api host from localhost to dev one
+                sh "docker build --no-cache --tag ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/frontend:$BUILD_NUMBER -f ${APP_NAME}/Dockerfile.reactUI ${APP_NAME}"
+                sh "docker build --no-cache --tag ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/backend:$BUILD_NUMBER -f ${APP_NAME}/server/Dockerfile.node ${APP_NAME}/server"
             }
         }
         stage('JENKINS: PUSH IMAGE') {
@@ -57,11 +57,11 @@ pipeline {
                 stage('DEPLOY') {
                     steps {
                         script {
-                            sh "sed -i \"s/:tag/:$BUILD_NUMBER/\" ${BACK_END_DEPLOYMENT_DIR}/deployment.yaml"
-                            sh 'oc apply -f ${BACK_END_DEPLOYMENT_DIR}'
+                            sh "sed -i \"s/:tag/:$BUILD_NUMBER/\" ${APP_NAME}/${BACK_END_DEPLOYMENT_DIR}/deployment.yaml"
+                            sh 'oc apply -f ${APP_NAME}/${BACK_END_DEPLOYMENT_DIR}'
 
-                            sh "sed -i \"s/:tag/:$BUILD_NUMBER/\" ${FRONT_END_DEPLOYMENT_DIR}/deployment.yaml"
-                            sh 'oc apply -f ${FRONT_END_DEPLOYMENT_DIR}'
+                            sh "sed -i \"s/:tag/:$BUILD_NUMBER/\" ${APP_NAME}/${FRONT_END_DEPLOYMENT_DIR}/deployment.yaml"
+                            sh 'oc apply -f ${APP_NAME}/${FRONT_END_DEPLOYMENT_DIR}'
                         }
                     }
                 }
