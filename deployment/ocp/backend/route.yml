@@ -1,7 +1,7 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: jonghong.nsth.net
+  name: api.jonghong.nsth.net
   namespace: jonghong
 spec:
   host: api.jonghong.nsth.net
@@ -12,5 +12,5 @@ spec:
     targetPort: 8080
   tls:
     termination: edge
-    insecureEdgeTerminationPolicy: Redirect
+    insecureEdgeTerminationPolicy: Allow
   wildcardPolicy: None

@@ -5,7 +5,7 @@ metadata:
   namespace: jonghong
 spec:
   selector:
-    app: jonghong-app
+    app: jonghong-app-api
   ports:
   - port: 8080
     protocol: TCP
