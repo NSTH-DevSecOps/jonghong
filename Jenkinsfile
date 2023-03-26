@@ -30,9 +30,22 @@ pipeline {
         oc 'oc-latest' //Configured OpenShift Client Tools name
     }
     stages {
-        stage('CI') {
+        stage('Pre-built') {
             steps {
                 sh "git clone --branch ${BRANCH_NAME} ${APP_REPOSITORY} ${APP_NAME}"
+                nexusPolicyEvaluation advancedProperties: '',
+                    enableDebugLogging: false,
+                    failBuildOnNetworkError: false,
+                    iqApplication: selectedApplication('nsth-room-reservation'),
+                    iqInstanceId: 'nexusiq.devops.demo',
+                    iqScanPatterns: [[scanPattern: "**/package-lock.json"]],
+                    iqStage: 'build',
+                    jobCredentialsId: ''
+                
+            }
+        }
+        stage('CI') {
+            steps {
                 sh "sed -i \"s/http/https/\" ${APP_NAME}/src/routes/rooms.jsx" // temporarily replace http to https
                 sh "sed -i \"s/localhost:8080/api.jonghong.nsth.net/\" ${APP_NAME}/src/routes/rooms.jsx" // temporarily replace api host from localhost to dev one
                 sh "docker build --no-cache --tag ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/frontend:$BUILD_NUMBER -f ${APP_NAME}/Dockerfile.reactUI ${APP_NAME}"
