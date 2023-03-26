@@ -1,29 +1,30 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
+const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 
-const eventSchema = require('../db/models/event');
+const eventSchema = require("../db/models/event");
 
 /**
  * Main routes.
  */
 async function main() {
   // Setup Swagger UI
-  router.use('/', swaggerUi.serve);
-  router.get('/', swaggerUi.setup(swaggerDocument));
+  router.use("/", swaggerUi.serve);
+  router.get("/", swaggerUi.setup(swaggerDocument));
 
-  router.get('/login', (req, res) => {
-    res.status(200).send('200');
+  router.get("/login", (req, res) => {
+    res.status(200).send("200");
   });
 
-  router.get('/events', async (req, res) => {
+  router.get("/events", async (req, res) => {
     await eventSchema
       .find()
-      .then((events) => {
+      .then(events => {
         res.status(200).json(events);
       })
-      .catch((err) => console.error(err));
+      .catch(err => console.error(err));
   });
 
   var max = 0;
@@ -32,29 +33,30 @@ async function main() {
     .find({})
     .sort({ event_id: -1 })
     .limit(1)
-    .then((data) => {
+    .then(data => {
       return data[0].event_id;
     })
-    .catch((err) => {
+    .catch(err => {
       return 0;
     });
 
   var counter = max + 1;
 
-  router.post('/events', async (req, res) => {
+  router.post("/events", async (req, res) => {
     var event = req.body;
     event.event_id = counter;
     event = await eventSchema
       .create(event)
       .then(() => {
-        console.log(event);
         counter++;
         res.status(200).json(event);
       })
-      .catch((err) => console.error(err));
+      .catch(err => {
+        console.error(err);
+      });
   });
 
-  router.put('/events', async (req, res) => {
+  router.put("/events", async (req, res) => {
     await eventSchema
       .findOneAndUpdate(
         { event_id: req.body.event_id },
@@ -67,17 +69,32 @@ async function main() {
           },
         },
         {
-          returnDocument: 'after',
+          returnDocument: "after",
         }
       )
-      .then((event) => {
+      .then(event => {
         res.status(200).json(event);
       })
-      .catch((err) => console.error(err));
+      .catch(err => {
+        console.error(err);
+      });
+  });
+
+  router.delete("/events/:event_id", async (req, res) => {
+    await eventSchema
+      .findOneAndDelete({
+        event_id: req.params.event_id,
+      })
+      .then(event => {
+        res.status(200).json(event);
+      })
+      .catch(err => {
+        console.error(err);
+      });
   });
 
   router.use((req, res) => {
-    res.status(404).send('API Not found.');
+    res.status(404).send("API Not found.");
   });
 }
 
