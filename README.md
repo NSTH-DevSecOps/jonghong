@@ -13,6 +13,4 @@ http://<container-ip>/
 ```
 
 ### JS Style Guide
-Strict to Google JS Style Guide: https://google.github.io/styleguide/jsguide.html with [eslint].
-   
-   [eslint]: <https://github.com/eslint/eslint>
+Refer to .prettierrc file
