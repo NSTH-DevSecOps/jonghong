@@ -33,15 +33,24 @@ pipeline {
         stage('Pre-built') {
             steps {
                 sh "git clone --branch ${BRANCH_NAME} ${APP_REPOSITORY} ${APP_NAME}"
+                
                 nexusPolicyEvaluation advancedProperties: '',
                     enableDebugLogging: false,
                     failBuildOnNetworkError: false,
-                    iqApplication: selectedApplication('nsth-room-reservation'),
+                    iqApplication: selectedApplication('jonghong-frontend'),
                     iqInstanceId: 'nexusiq.devops.demo',
-                    iqScanPatterns: [[scanPattern: "**/package-lock.json"]],
+                    iqScanPatterns: [[scanPattern: "${APP_NAME}/package-lock.json"]],
                     iqStage: 'build',
                     jobCredentialsId: ''
                 
+                nexusPolicyEvaluation advancedProperties: '',
+                    enableDebugLogging: false,
+                    failBuildOnNetworkError: false,
+                    iqApplication: selectedApplication('jonghong-backend'),
+                    iqInstanceId: 'nexusiq.devops.demo',
+                    iqScanPatterns: [[scanPattern: "${APP_NAME}/server/package-lock.json"]],
+                    iqStage: 'build',
+                    jobCredentialsId: ''
             }
         }
         stage('CI') {
