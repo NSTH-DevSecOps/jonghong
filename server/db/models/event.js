@@ -6,7 +6,8 @@ let eventSchema = new Schema({
     event_id: Number,
     title: String,
     start: Date,
-    end: Date
+    end: Date,
+    admin_id: Number
 }, {
     collection: 'events'
 })

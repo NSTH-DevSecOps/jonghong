@@ -5,7 +5,7 @@ import CScheduler from "../components/scheduler";
 export function SM1() {
   return (
     <>
-      <CScheduler></CScheduler>
+      <CScheduler admin_id={1} />
     </>
   )
 }
@@ -13,7 +13,7 @@ export function SM1() {
 export function SM2() {
   return (
     <>
-      <CScheduler></CScheduler>
+      <CScheduler admin_id={2} />
     </>
   );
 }
@@ -21,7 +21,7 @@ export function SM2() {
 export function BM1() {
   return (
     <>
-      <CScheduler></CScheduler>
+      <CScheduler admin_id={3} />
     </>
   );
 }
@@ -29,7 +29,7 @@ export function BM1() {
 export function BM2() {
   return (
     <>
-      <CScheduler></CScheduler>
+      <CScheduler admin_id={4} />
     </>
   );
 }
@@ -37,7 +37,7 @@ export function BM2() {
 export function TR1() {
   return (
     <>
-      <CScheduler></CScheduler>
+      <CScheduler admin_id={5} />
     </>
   );
 }
