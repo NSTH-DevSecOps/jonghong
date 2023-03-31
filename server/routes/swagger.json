@@ -6,33 +6,60 @@
     "version": "0.0.2-alpha"
   },
   "basePath": "/api/",
-  "produces": ["application/json"],
   "paths": {
     "/events": {
       "get": {
         "tags": ["Event"],
-        "summary": "",
-        "description": "",
+        "summary": "Get list of events",
+        "description": "Get list of events",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Test",
+            "description": "Return list of events",
             "schema": {}
           }
         }
       },
       "post": {
         "tags": ["Event"],
-        "summary": "",
-        "description": "",
+        "summary": "Create an event",
+        "description": "Create an event",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Test",
+            "description": "Return a created event",
+            "schema": {}
+          }
+        }
+      },
+      "put": {
+        "tags": ["Event"],
+        "summary": "Edit an event",
+        "description": "Edit an event",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Return an edited event",
+            "schema": {}
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Event"],
+        "summary": "Delete an event",
+        "description": "Delete an event",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Return a deleted event",
             "schema": {}
           }
         }
