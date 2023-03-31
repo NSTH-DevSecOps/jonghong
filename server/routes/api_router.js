@@ -4,7 +4,6 @@ const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
-const roomSchema = require("../db/models/room");
 const eventSchema = require("../db/models/event");
 
 /**
@@ -17,35 +16,6 @@ async function main() {
 
   router.get("/login", (req, res) => {
     res.status(200).send("200");
-  });
-
-  router.get("/rooms", async (req, res) => {
-    await roomSchema
-      .find()
-      .then(rooms => {
-        res.status(200).json(rooms);
-      })
-      .catch(err => console.error(err));
-  });
-
-  router.post("/rooms", async (req, res) => {
-    await roomSchema
-      .create(req.body)
-      .then(() => {
-        res.status(200).json(req.body);
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  });
-
-  router.get("/rooms/:room_id/events", async (req, res) => {
-    await eventSchema
-      .find({ admin_id: req.params.room_id })
-      .then(rooms => {
-        res.status(200).json(rooms);
-      })
-      .catch(err => console.error(err));
   });
 
   router.get("/events", async (req, res) => {
