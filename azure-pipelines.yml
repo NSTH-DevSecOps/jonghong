@@ -23,38 +23,38 @@ stages:
             displayName: 'Install Spectral'
           - script: $HOME/.spectral/spectral scan --ok --dsn $(SPECTRAL_DSN) --include-tags base,audit3,iac
             displayName: 'Spectral Scan'
-  - stage: CI
-    pool:
-      name: 'Azure-DO-Self-Hosted'
-      demands:
-        - Agent.Type -equals Linux
-    jobs:
-      - job: BuildAndPush
-        steps:
-          - task: Docker@2
-            inputs:
-              containerRegistry: 'nsthdso.azurecr.io'
-              repository: 'nsth-room-reservation'
-              command: 'buildAndPush'
-              Dockerfile: '**/Dockerfile.reactUI'
-  - stage: CD
-    pool:
-      name: 'Azure-DO-Self-Hosted'
-      demands:
-        - Agent.Type -equals Linux
-    jobs:
-      - job: Deploy
-        steps:
-          # Use deployment (YAML) files to deploy a deployment of built Docker image to AKS
-          # Ref: https://learn.microsoft.com/en-us/azure/aks/devops-pipeline?view=azure-devops&pivots=pipelines-yaml
-          - task: KubernetesManifest@0
-            inputs:
-              action: 'deploy'
-              kubernetesServiceConnection: 'dev-aks_nsthdso'
-              namespace: 'nsthdso'
-              manifests: |
-                deployment/aks/deployment.yml
-                deployment/aks/service.yml
-                deployment/aks/ingress.yml
-              containers: 'nsthdso.azurecr.io/nsth-room-reservation:$(Build.BuildId)'
-              imagePullSecrets: 'nsthdso.azurecr.io'
+  # - stage: CI
+  #   pool:
+  #     name: 'Azure-DO-Self-Hosted'
+  #     demands:
+  #       - Agent.Type -equals Linux
+  #   jobs:
+  #     - job: BuildAndPush
+  #       steps:
+  #         - task: Docker@2
+  #           inputs:
+  #             containerRegistry: 'nsthdso.azurecr.io'
+  #             repository: 'nsth-room-reservation'
+  #             command: 'buildAndPush'
+  #             Dockerfile: '**/Dockerfile.reactUI'
+  # - stage: CD
+  #   pool:
+  #     name: 'Azure-DO-Self-Hosted'
+  #     demands:
+  #       - Agent.Type -equals Linux
+  #   jobs:
+  #     - job: Deploy
+  #       steps:
+  #         # Use deployment (YAML) files to deploy a deployment of built Docker image to AKS
+  #         # Ref: https://learn.microsoft.com/en-us/azure/aks/devops-pipeline?view=azure-devops&pivots=pipelines-yaml
+  #         - task: KubernetesManifest@0
+  #           inputs:
+  #             action: 'deploy'
+  #             kubernetesServiceConnection: 'dev-aks_nsthdso'
+  #             namespace: 'nsthdso'
+  #             manifests: |
+  #               deployment/aks/deployment.yml
+  #               deployment/aks/service.yml
+  #               deployment/aks/ingress.yml
+  #             containers: 'nsthdso.azurecr.io/nsth-room-reservation:$(Build.BuildId)'
+  #             imagePullSecrets: 'nsthdso.azurecr.io'
