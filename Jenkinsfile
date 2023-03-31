@@ -55,8 +55,8 @@ pipeline {
         }
         stage('CI') {
             steps {
-                sh "sed -i \"s/http/https/\" ${APP_NAME}/src/routes/scheduler.jsx" // temporarily replace http to https
-                sh "sed -i \"s/127.0.0.1:8080/api.jonghong.nsth.net/\" ${APP_NAME}/src/routes/scheduler.jsx" // temporarily replace api host from localhost to dev one
+                sh "sed -i \"s/http/https/\" ${APP_NAME}/src/App.tsx" // temporarily replace http to https
+                sh "sed -i \"s/127.0.0.1:8080/api.jonghong.nsth.net/\" ${APP_NAME}/src/App.tsx" // temporarily replace api host from localhost to dev one
                 sh "sed -i \"s/http/https/\" ${APP_NAME}/server/server.js" // temporarily replace http to https
                 sh "sed -i \"s/127.0.0.1:5174/jonghong.nsth.net/\" ${APP_NAME}/server/server.js" // temporarily replace api host from localhost to dev one
                 sh "docker build --no-cache --tag ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/frontend:$BUILD_NUMBER -f ${APP_NAME}/Dockerfile.reactUI ${APP_NAME}"
