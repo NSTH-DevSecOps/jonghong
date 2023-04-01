@@ -3,7 +3,7 @@ import { Fragment, useRef } from "react";
 
 import { Button } from "@mui/material";
 
-import Scheduler from "@aldabil/react-scheduler";
+import { Scheduler } from "@aldabil/react-scheduler";
 import {
   EventActions,
   ProcessedEvent,
@@ -11,27 +11,48 @@ import {
   SchedulerRef,
 } from "@aldabil/react-scheduler/types";
 
-import { ROOMS } from "./rooms";
-
 const proto = "http";
 const BaseURL = "127.0.0.1:8080";
 const API = `${proto}://${BaseURL}`;
 
+const ROOMS = [
+  {
+    admin_id: 1,
+    title: "Small Meeting 1",
+  },
+  {
+    admin_id: 2,
+    title: "Small Meeting 2",
+  },
+  {
+    admin_id: 3,
+    title: "Big Meeting 1",
+  },
+  {
+    admin_id: 4,
+    title: "Big Meeting 2",
+  },
+  {
+    admin_id: 5,
+    title: "Training Room",
+  },
+];
+
 /**
  * Reconstruct event object as date object stores as text in database
- * @param {JSON} event Event object created from '@aldabil/react-scheduler'
- * @returns event
+ * @param {ProcessedEvent} event Event object created from '@aldabil/react-scheduler'
+ * @returns {ProcessedEvent} event
  */
-async function eventReconstruct(event) {
+function eventReconstruct(event: ProcessedEvent): ProcessedEvent {
   event.start = new Date(event.start);
   event.end = new Date(event.end);
-  return await event;
+  return event;
 }
 
-export default function App() {
+function App() {
   const calendarRef = useRef<SchedulerRef>(null);
 
-  const fetchRemoteEvents = async () => {
+  const fetchRemoteEvents = async (): Promise<ProcessedEvent[]> => {
     var events = await fetch(`${API}/api/events`).then((response) =>
       response.json()
     );
@@ -39,7 +60,7 @@ export default function App() {
     return events;
   };
 
-  const handleConfirm = async (event, action) => {
+  const handleConfirm = async (event: ProcessedEvent, action: EventActions) => {
     if (action === "create") {
       return await fetch(`${API}/api/events`, {
         method: "POST",
@@ -63,7 +84,7 @@ export default function App() {
     }
   };
 
-  const handleDelete = async (event_id) => {
+  const handleDelete = async (event_id: number): Promise<string> => {
     return await fetch(`${API}/api/events/${event_id}`, {
       method: "DELETE",
     })
@@ -147,3 +168,5 @@ export default function App() {
     </Fragment>
   );
 }
+
+export default App;
