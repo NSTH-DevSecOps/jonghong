@@ -1,0 +1,30 @@
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: jonghong.nsth.net
+#   namespace: jonghong
+#   annotations:
+#     cert-manager.io/cluster-issuer: letsencrypt
+#     cert-manager.io/issue-temporary-certificate: "true"
+#     acme.cert-manager.io/http01-ingress-class: openshift-default
+#     acme.cert-manager.io/http01-edit-in-place: "true"
+#     # cert-manager.io/common-name: jonghong.nsth.net
+#     # cert-manager.io/private-key-encoding: PKCS8
+#     # cert-manager.io/private-key-size: '4096'
+# spec:
+#   ingressClassName: openshift-default
+#   tls:
+#     - hosts:
+#         - jonghong.nsth.net
+#       secretName: jonghong-certificate
+#   rules:
+#     - host: jonghong.nsth.net
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: jonghong-app-svc
+#                 port:
+#                   number: 80
