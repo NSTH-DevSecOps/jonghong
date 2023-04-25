@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const cors = require("cors");
+
+const jwt = require("jsonwebtoken");
+
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
 const eventSchema = require("../db/models/event");
+
+const authJwt = require("../middlewares/authJwt");
 
 /**
  * Main routes.
@@ -14,17 +18,32 @@ async function main() {
   router.use("/", swaggerUi.serve);
   router.get("/", swaggerUi.setup(swaggerDocument));
 
-  router.get("/login", (req, res) => {
-    res.status(200).send("200");
+  router.get("/login", async (req, res) => {
+    const { email, password } = req.body;
+    if (password === "admin") {
+      jwt.sign(
+        { id: email, email: email },
+        String(process.env.SECRET),
+        {
+          expiresIn: "5m",
+        },
+        async (err, token) => {
+          console.log(token);
+          res.status(200).send(token);
+        }
+      );
+    } else {
+      res.status(403).send("UNTHORIZED!");
+    }
   });
 
-  router.get("/events", async (req, res) => {
+  router.get("/events", authJwt.verifyToken, async (req, res) => {
     await eventSchema
       .find()
-      .then(events => {
+      .then((events) => {
         res.status(200).json(events);
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   });
 
   var max = 0;
@@ -33,18 +52,18 @@ async function main() {
     .find({})
     .sort({ event_id: -1 })
     .limit(1)
-    .then(data => {
+    .then((data) => {
       return data[0].event_id;
     })
-    .catch(err => {
+    .catch((err) => {
       return 0;
     });
 
   var counter = max + 1;
 
-  router.post("/events", async (req, res) => {
+  router.post("/events", authJwt.verifyToken, async (req, res) => {
     var event = req.body;
-    console.log(req.body)
+    console.log(req.body);
     event.event_id = counter;
     event = await eventSchema
       .create(event)
@@ -52,12 +71,12 @@ async function main() {
         counter++;
         res.status(200).json(event);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   });
 
-  router.put("/events", async (req, res) => {
+  router.put("/events", authJwt.verifyToken, async (req, res) => {
     await eventSchema
       .findOneAndUpdate(
         { event_id: req.body.event_id },
@@ -73,23 +92,23 @@ async function main() {
           returnDocument: "after",
         }
       )
-      .then(event => {
+      .then((event) => {
         res.status(200).json(event);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   });
 
-  router.delete("/events/:event_id", async (req, res) => {
+  router.delete("/events/:event_id", authJwt.verifyToken, async (req, res) => {
     await eventSchema
       .findOneAndDelete({
         event_id: req.params.event_id,
       })
-      .then(event => {
+      .then((event) => {
         res.status(200).json(event);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   });
