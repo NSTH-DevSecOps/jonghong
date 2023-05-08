@@ -29,7 +29,7 @@ async function main() {
         },
         async (err, token) => {
           console.log(token);
-          res.status(200).send(token);
+          res.status(200).send({"token": token});
         }
       );
     } else {

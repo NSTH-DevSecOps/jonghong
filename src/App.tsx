@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+
 import { Fragment, useRef } from "react";
 
 import { Button } from "@mui/material";
@@ -10,6 +11,8 @@ import {
   ViewEvent,
   SchedulerRef,
 } from "@aldabil/react-scheduler/types";
+
+import Login from "./components/Login";
 
 const proto = "http";
 const BaseURL = "127.0.0.1:8080";
@@ -50,7 +53,13 @@ function eventReconstruct(event: ProcessedEvent): ProcessedEvent {
 }
 
 function App() {
+  const [token, setToken] = useState();
+
   const calendarRef = useRef<SchedulerRef>(null);
+
+  if (!token) {
+    return <Login setToken={setToken} />;
+  }
 
   const fetchRemoteEvents = async (): Promise<ProcessedEvent[]> => {
     var events = await fetch(`${API}/api/events`).then((response) =>
