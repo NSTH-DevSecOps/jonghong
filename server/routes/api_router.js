@@ -18,7 +18,7 @@ async function main() {
   router.use("/", swaggerUi.serve);
   router.get("/", swaggerUi.setup(swaggerDocument));
 
-  router.get("/login", async (req, res) => {
+  router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     if (password === "admin") {
       jwt.sign(
