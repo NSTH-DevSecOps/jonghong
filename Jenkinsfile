@@ -53,6 +53,17 @@ pipeline {
                     jobCredentialsId: ''
             }
         }
+        stage('FORTIFY: SAST') {
+            agent {label 'SAST'}
+            steps {
+                git branch: "${BRANCH_NAME}", url: "${APP_REPOSITORY}"
+                script {
+                    fortifyClean buildID: "jonghong-$BUILD_NUMBER"
+                    fortifyTranslate addJVMOptions: '', buildID: "jonghong-$BUILD_NUMBER", excludeList: '', logFile: '', maxHeap: '', projectScanType: fortifyOther(otherIncludesList: './**/*.**', otherOptions: '')
+                    fortifyRemoteScan buildID: "jonghong-$BUILD_NUMBER", uploadSSC: [appName: 'jonghong', appVersion: 'v0.0.1']
+                }
+            }
+        }
         stage('CI') {
             steps {
                 sh "sed -i \"s/http/https/\" ${APP_NAME}/src/App.tsx" // temporarily replace http to https
@@ -61,6 +72,15 @@ pipeline {
                 sh "sed -i \"s/127.0.0.1:5174/jonghong.nsth.net/\" ${APP_NAME}/server/server.js" // temporarily replace api host from localhost to dev one
                 sh "docker build --no-cache --tag ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/frontend:$BUILD_NUMBER -f ${APP_NAME}/Dockerfile.reactUI ${APP_NAME}"
                 sh "docker build --no-cache --tag ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/backend:$BUILD_NUMBER -f ${APP_NAME}/server/Dockerfile.node ${APP_NAME}/server"
+            }
+        }
+        stage('IMAGE SCAN: Trivy') {
+            steps {
+                sh "docker pull aquasec/trivy:0.41.0"
+                sh "docker run -v /var/run/docker.sock:/var/run/docker.sock -v \$PWD:/result --rm aquasec/trivy:0.41.0 image ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/frontend:$BUILD_NUMBER --format json --output /result/jonghong-frontend-trivy.json"
+                sh "docker run -v /var/run/docker.sock:/var/run/docker.sock -v \$PWD:/result --rm aquasec/trivy:0.41.0 image ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/frontend:$BUILD_NUMBER --format cyclonedx --output /result/jonghong-frontend-trivy-sbom.json"
+                sh "docker run -v /var/run/docker.sock:/var/run/docker.sock -v \$PWD:/result --rm aquasec/trivy:0.41.0 image ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/backend:$BUILD_NUMBER --format json --output /result/jonghong-backend-trivy.json"
+                sh "docker run -v /var/run/docker.sock:/var/run/docker.sock -v \$PWD:/result --rm aquasec/trivy:0.41.0 image ${DEV_DOCKER_REPOSITORY_HOST}/jonghong/backend:$BUILD_NUMBER --format cyclonedx --output /result/jonghong-backend-trivy-sbom.json"
             }
         }
         stage('JENKINS: PUSH IMAGE') {
@@ -94,6 +114,7 @@ pipeline {
     }
     post { 
         always {
+            archiveArtifacts artifacts: '*trivy*.json', fingerprint: true
             cleanWs()
             sh "for i in \$(docker image ls | grep ${APP_NAME} | gerp $BUILD_NUMBER | awk '{print \$1\":\"\$2}'); do docker rmi \$i; done"
             sh 'docker system prune --force'
